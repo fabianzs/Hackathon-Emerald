@@ -1,1 +1,1 @@
-# Heckaton-Emerald
+# Hackathon-Emerald
