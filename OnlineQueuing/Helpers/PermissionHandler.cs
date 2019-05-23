@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
@@ -29,40 +29,24 @@ namespace OnlineQueuing.Helpers
             {
                 if (requirement is AdminRequirement)
                 {
-                    if (IsAdmin(context.User, context.Resource))
+                    if (IsAdmin(context.User))
                     {
                         context.Succeed(requirement);
                     }
                 }
-                //else if (requirement is EditPermission ||
-                //         requirement is DeletePermission)
-                //{
-                //    if (IsAdmin(context.User, context.Resource))
-                //    {
-                //        context.Succeed(requirement);
-                //    }
-                //}
             }
 
             return Task.CompletedTask;
         }
 
-        private bool IsAdmin(ClaimsPrincipal user, object resource)
+        private bool IsAdmin(ClaimsPrincipal user)
         {
-            string email = authService.GetUserEmail(user);
-            Entities.User dbUser = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
-            if (dbUser != null)
-            {
-                if(dbUser.Role.Equals("Admin"))
+            string role = user.Identities.FirstOrDefault().Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Value;
+            if(role.Equals("Admin"))
+            { 
                 return true;
             }
             return false;
         }
-
-        //private bool IsSponsor(ClaimsPrincipal user, object resource)
-        //{
-
-        //    return true;
-        //}
     }
 }

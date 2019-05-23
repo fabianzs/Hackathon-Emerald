@@ -1,4 +1,5 @@
-﻿using OnlineQueuing.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using OnlineQueuing.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

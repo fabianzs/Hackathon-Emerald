@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
@@ -40,10 +41,16 @@ namespace OnlineQueuing.Services
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
             if (user == null)
             {
-                user = new User() { Email = email, Name = username, Role = Role.User };
+                user = new User()
+                {
+                    Email = email,
+                    Name = username,
+                    Role = Role.Admin
+                };
                 applicationContext.Users.Add(user);
                 applicationContext.SaveChanges();
             }
+
             return user;
         }
 
@@ -56,7 +63,12 @@ namespace OnlineQueuing.Services
         public string CreateJwtToken(string name, string email, string role)
         {
             JwtSecurityToken token = new JwtSecurityToken(
-                claims: new Claim[] { new Claim("Name", name), new Claim("Email", email), new Claim("Role", role) },
+                claims: new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, name),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, role)
+                },
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Authentication:Jwt:Secret"])), SecurityAlgorithms.HmacSha256Signature)

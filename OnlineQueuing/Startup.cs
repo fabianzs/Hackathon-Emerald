@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -60,12 +61,15 @@ namespace OnlineQueuing
             services.AddAuthorization(auth =>
             {
                 auth.AddPolicy("Admin", policy =>
-                    policy.Requirements.Add(new AdminRequirement()));
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.Requirements.Add(new AdminRequirement());
+                });
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
-                .AddDefaultTokenProviders(); ;
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
                     {
@@ -74,6 +78,7 @@ namespace OnlineQueuing
                     })
                     .AddJwtBearer(options =>
                     {
+                        options.SaveToken = true;
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = false,
@@ -93,11 +98,6 @@ namespace OnlineQueuing
                                 c.Response.WriteAsync(JsonConvert.SerializeObject(new CustomErrorMessage("Unauthorized"))).Wait();
                                 return Task.CompletedTask;
                             },
-                            OnChallenge = c =>
-                            {
-                                c.HandleResponse();
-                                return Task.CompletedTask;
-                            }
                         };
                     })
                     .AddGoogle(options =>
@@ -136,7 +136,6 @@ namespace OnlineQueuing
             app.UseAuthentication();
 
             app.UseMvc();
-
         }
     }
 }
