@@ -41,5 +41,24 @@ namespace OnlineQueuing.Controllers
             }
             return Ok(accessToken);
         }
+
+        [Authorize]
+        [HttpGet("refreshtoken")]
+        public async Task<IActionResult> GetRefreshToken()
+        {
+            string refreshToken = string.Empty;
+            if (User.Identity.IsAuthenticated)
+            {
+                refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+            }
+            return Ok(refreshToken);
+        }
+
+        [Authorize("Admin")]
+        [HttpGet("admin")]
+        public IActionResult Admin()
+        {
+            return Ok();
+        }
     }
 }
