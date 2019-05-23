@@ -35,7 +35,8 @@ namespace OnlineQueuing
         {
             services.AddMvc();
             services.AddDbContext<ApplicationContext>(builder =>
-                       builder.UseInMemoryDatabase("InMemoryDatabase"));
+                        builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                        .EnableSensitiveDataLogging(true));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
