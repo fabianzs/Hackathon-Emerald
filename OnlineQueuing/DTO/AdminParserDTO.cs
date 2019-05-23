@@ -7,12 +7,8 @@ namespace OnlineQueuing.DTO
 {
     public class AdminParserDTO
     {
-
-        public class Rootobject
-        {
-            public Admin[] Admins { get; set; }
-        }
-
+        public Admin[] Admins { get; set; }
+        
         public class Admin
         {
             public string Name { get; set; }

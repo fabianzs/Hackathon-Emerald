@@ -78,14 +78,11 @@ namespace OnlineQueuing
             {
                 app.UseDeveloperExceptionPage();
                 AdminParser adminParser = new AdminParser(applicationContext, configuration);
-               // seedDataFromObject.FillDatabaseFromObject();
             }
 
             if (env.IsProduction())
             {
                 AdminParser adminParser = new AdminParser(applicationContext, configuration);
-
-               // seedDataFromObject.FillDatabaseFromObject();
             }
 
             app.UseAuthentication();
