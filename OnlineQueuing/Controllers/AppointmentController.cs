@@ -9,23 +9,24 @@ using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
 
+
 namespace OnlineQueuing.Controllers
 {
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService appointmentService;
-        private readonly IAuthService authService;
+        
 
-        public AppointmentController(IAppointmentService appointmentService, IAuthService authService)
+        public AppointmentController(IAppointmentService appointmentService)
         {
-            this.authService = authService;
+            
             this.appointmentService = appointmentService;
         }
 
         [HttpPost("appointment")]
         public IActionResult PostNewAppointment(Appointment appointment)
         {
-            bool result = appointmentService.CreateAppointment(appointment);
+            bool result = appointmentService.CreateAppointment(appointment, Request);
 
             if (result)
             {
@@ -40,13 +41,10 @@ namespace OnlineQueuing.Controllers
         [HttpDelete("deleteAppointment")]
         public IActionResult DeleteAppointment(Appointment appointment)
         {
-            List<User> appUsers = applicationContext.Users.Select(u => u).ToList();
-            List<Appointment> allAppointments = appUsers.SelectMany(u => u.Apointments).ToList();
+            bool result = appointmentService.DeleteAppointment(appointment,Request);
 
-            if (allAppointments.Contains(appointment))
+            if (result)
             {
-                applicationContext.Remove(appointment);
-                applicationContext.SaveChanges();
                 return NoContent();
             }
             return BadRequest(new { message = "Your request is not valid" });

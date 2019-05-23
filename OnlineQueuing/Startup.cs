@@ -61,6 +61,7 @@ namespace OnlineQueuing
                     });
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
