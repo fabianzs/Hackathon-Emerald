@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -132,7 +132,7 @@ namespace OnlineQueuing
             services.AddAuthorization(auth =>
             {
                 auth.AddPolicy("Admin", new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme??)
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
                     .RequireAuthenticatedUser().Build());
             });
 
@@ -141,6 +141,9 @@ namespace OnlineQueuing
                 options.DefaultAuthenticateScheme = "Admin";
                 options.DefaultChallengeScheme = "Admin";
             }).AddTestAuth(o => { });
+
+            services.AddScoped<IAuthService, MockAuthService>();
+            services.AddScoped<HttpClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext applicationContext)

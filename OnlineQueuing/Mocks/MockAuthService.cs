@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace OnlineQueuing.Mocks
 {
@@ -18,14 +14,14 @@ namespace OnlineQueuing.Mocks
             this.configuration = configuration;
         }
 
-        public string GetUserEmail()
+        public string GetUserEmail(ClaimsPrincipal user)
         {
-            return null;
+            return "user";
         }
 
-        public string GetUsername()
+        public string GetUsername(ClaimsPrincipal user)
         {
-            return null;
+            return "user";
         }
 
         public User SaveUser(string email, string username)
