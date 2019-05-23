@@ -21,6 +21,7 @@ namespace OnlineQueuing.Controllers
         [HttpPost("appintments")]
         public IActionResult PostNewAppoinment()
         {
+            List<DateTime> dataTimes = applicationContext.
 
             if ()
             {
