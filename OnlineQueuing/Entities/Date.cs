@@ -10,5 +10,6 @@ namespace OnlineQueuing.Entities
         public long DateId { get; set; }
         public DateTime DateTime { get; set; }
         public List<Appointment> Appointments { get; set; }
+        public List<ServiceDate> ServiceDates { get; set; }
     }
 }
