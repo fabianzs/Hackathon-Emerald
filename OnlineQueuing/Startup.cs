@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using OnlineQueuing.Data;
 using OnlineQueuing.Helpers;
 using OnlineQueuing.Services;
@@ -39,18 +42,18 @@ namespace OnlineQueuing
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
+
             services.AddDbContext<ApplicationContext>(builder =>
                        builder.UseInMemoryDatabase("InMemoryDatabase"));
-          
+
             //services.AddDbContext<ApplicationContext>(builder =>
             //           builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
             //            .EnableSensitiveDataLogging(true));
 
             services.AddAuthorization(auth =>
             {
-            auth.AddPolicy("Admin", policy =>
-                policy.Requirements.Add(new AdminRequirement()));
+                auth.AddPolicy("Admin", policy =>
+                    policy.Requirements.Add(new AdminRequirement()));
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>()
@@ -61,6 +64,34 @@ namespace OnlineQueuing
                     {
                         options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
                         options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateIssuerSigningKey = true,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Authentication:Jwt:Secret"])),
+                            ClockSkew = TimeSpan.Zero
+                        };
+                        options.Events = new JwtBearerEvents()
+                        {
+                            OnAuthenticationFailed = c =>
+                            {
+                                c.NoResult();
+                                c.Response.StatusCode = 401;
+                                c.Response.ContentType = "application/json";
+                                c.Response.WriteAsync(JsonConvert.SerializeObject(new CustomErrorMessage("Unauthorized"))).Wait();
+                                return Task.CompletedTask;
+                            },
+                            OnChallenge = c =>
+                            {
+                                c.HandleResponse();
+                                return Task.CompletedTask;
+                            }
+                        };
                     })
                     .AddGoogle(options =>
                     {
