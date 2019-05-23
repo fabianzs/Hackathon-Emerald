@@ -31,6 +31,14 @@ namespace OnlineQueuing.Controllers
         }
 
         [Authorize]
+        [HttpGet("jwttoken")]
+        public IActionResult CreateToken()
+        {
+            User user = authService.GetUserFromDb(authService.GetUserEmail(User));
+            return Ok(authService.CreateJwtToken(user.Name, user.Email, user.Role));
+        }
+
+        [Authorize]
         [HttpGet("accesstoken")]
         public async Task<IActionResult> GetAccessToken()
         {
@@ -40,6 +48,25 @@ namespace OnlineQueuing.Controllers
                 accessToken = await HttpContext.GetTokenAsync("access_token");
             }
             return Ok(accessToken);
+        }
+
+        [Authorize]
+        [HttpGet("refreshtoken")]
+        public async Task<IActionResult> GetRefreshToken()
+        {
+            string refreshToken = string.Empty;
+            if (User.Identity.IsAuthenticated)
+            {
+                refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+            }
+            return Ok(refreshToken);
+        }
+
+        [Authorize("Admin")]
+        [HttpGet("admin")]
+        public IActionResult Admin()
+        {
+            return Ok("Mekkora admin vagy :O");
         }
     }
 }
