@@ -36,8 +36,13 @@ namespace OnlineQueuing
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            
+            //services.AddDbContext<ApplicationContext>(builder =>
+            //           builder.UseInMemoryDatabase("InMemoryDatabase"));
+          
             services.AddDbContext<ApplicationContext>(builder =>
-                       builder.UseInMemoryDatabase("InMemoryDatabase"));
+                       builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                        .EnableSensitiveDataLogging(true));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
