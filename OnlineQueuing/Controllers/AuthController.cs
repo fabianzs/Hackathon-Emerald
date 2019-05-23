@@ -31,6 +31,14 @@ namespace OnlineQueuing.Controllers
         }
 
         [Authorize]
+        [HttpGet("jwttoken")]
+        public IActionResult CreateToken()
+        {
+            User user = authService.GetUserFromDb(authService.GetUserEmail(User));
+            return Ok(authService.CreateJwtToken(user.Name, user.Email, user.Role));
+        }
+
+        [Authorize]
         [HttpGet("accesstoken")]
         public async Task<IActionResult> GetAccessToken()
         {
