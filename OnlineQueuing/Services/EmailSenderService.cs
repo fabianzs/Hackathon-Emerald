@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace OnlineQueuing.Services
 {
-    public class EmailSenderService
+    public class EmailSenderService : IEmailSenderService
     {
         private IConfiguration configuration;
         private SmtpClient smtpClient;
