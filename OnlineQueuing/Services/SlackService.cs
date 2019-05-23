@@ -69,7 +69,7 @@ namespace OnlineQueuing.Services
 
             var reminderRequestBody = new List<KeyValuePair<string, string>>();
             reminderRequestBody.Add(new KeyValuePair<string, string>("text", notificationBody));
-            reminderRequestBody.Add(new KeyValuePair<string, string>("time", "1558642820"));
+            reminderRequestBody.Add(new KeyValuePair<string, string>("time", unixTimestamp.ToString()));
             reminderRequestBody.Add(new KeyValuePair<string, string>("user", responseObject.user.id));
 
             reminderRequest.Content = new FormUrlEncodedContent(reminderRequestBody);
