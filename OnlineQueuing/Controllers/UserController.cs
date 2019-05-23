@@ -3,14 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using OnlineQueuing.Data;
 
 namespace OnlineQueuing.Controllers
 {
     public class UserController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationContext applicationContext;
+        
+
+        public UserController(ApplicationContext application)
         {
-            return View();
+       
+            this.applicationContext = application;
         }
+
+        [HttpPost("appintments")]
+        public IActionResult PostNewAppoinment()
+        {
+
+            if ()
+            {
+                return Created("", new { message = "Success" });
+            }
+            return BadRequest();
+        }
+
     }
 }
