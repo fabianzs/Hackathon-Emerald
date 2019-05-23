@@ -11,6 +11,6 @@ namespace OnlineQueuing.Services
     public interface IAppointmentService
     {
          bool CreateAppointment(HttpRequest request, AppointmentDTO appointmentDTO);
-         bool DeleteAppointment(Appointment appiontment, HttpRequest request);
+        // bool DeleteAppointment(HttpRequest request, AppointmentDTO appointmentDTO);
     }
 }

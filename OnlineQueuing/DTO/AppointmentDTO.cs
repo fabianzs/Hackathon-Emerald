@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineQueuing.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace OnlineQueuing.DTO
     {
         public int TimeSlot { get; set; }
         public string ServiceType { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
     }
 
 

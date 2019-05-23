@@ -10,6 +10,6 @@ namespace OnlineQueuing.Entities
         public long AppointmentId { get; set; }
         public int TimeSlot { get; set; }
         public string ServiceType { get; set; }
-        public Date Date { get; set; }
+        public string Date { get; set; }
     }
 }

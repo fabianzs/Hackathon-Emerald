@@ -24,43 +24,43 @@ namespace OnlineQueuing.Services
         public bool CreateAppointment(HttpRequest request, AppointmentDTO appointmentDTO)
         {
             List<User> appUsers = applicationContext.Users.Select(u => u).ToList();
-            List<int> allTimeSlots = appUsers.SelectMany(u => u.Apointments.Select(a => a.TimeSlot)).ToList();
-            List<DateTime> allDatetime = appUsers.SelectMany(d => d.Apointments.Select(t => t.Date.DateTime)).ToList();
+            List<int> allTimeSlots = appUsers.SelectMany(u => u.Appointments.Select(a => a.TimeSlot)).ToList();
+            List<string> allDatetime = appUsers.SelectMany(d => d.Appointments.Select(t => t.Date)).ToList();
             Appointment appointment = new Appointment()
             {
                 TimeSlot = appointmentDTO.TimeSlot,
                 ServiceType = appointmentDTO.ServiceType,
-                Date = new Date { DateTime = appointmentDTO.Date }
-  
+                Date = appointmentDTO.Date
             };
             //List<User> admins = appUsers.Where(u => u.Role.Equals("Admin")).ToList();
 
-            if (!allTimeSlots.Contains(appointment.TimeSlot) && appointment.TimeSlot > 1 && appointment.TimeSlot < 8 && !allDatetime.Contains(appointment.Date.DateTime))
+            if (!allTimeSlots.Contains(appointment.TimeSlot) && appointment.TimeSlot > 1 && appointment.TimeSlot < 8 && !allDatetime.Contains(appointment.Date))
             {
                 string email = authService.GetEmailFromJwtToken(request);
                 User user = applicationContext.Users.FirstOrDefault(u => u.Email == email);
-                user.Apointments.Add(appointment);
+                user.Appointments.Add(appointment);
                 applicationContext.Add(appointment);
                 applicationContext.SaveChanges();
                 return true;
             }
-            else return false;
+            else return false; 
         }
-
-        public bool DeleteAppointment(Appointment appiontment, HttpRequest request)
+/*
+        public bool DeleteAppointment(AppointmentDTO appointmentDTO, HttpRequest request)
         {
             string email = authService.GetEmailFromJwtToken(request);
             User user = applicationContext.Users.FirstOrDefault(u=>u.Email==email);
 
-            List<Appointment> userAppointments = user.Apointments.Select(a => a).ToList();
+            List<Appointment> userAppointments = user.Appointments.Select(a => a).ToList();
 
-            if (userAppointments.Contains(appiontment))
+            if (userAppointments.Contains(appointmentDTO))
             {
-                applicationContext.Remove(appiontment);
+                applicationContext.Remove(appointmentDTO);
                 applicationContext.SaveChanges();
                 return true;
             }
             else return false;
         }
+*/
     }
 }
