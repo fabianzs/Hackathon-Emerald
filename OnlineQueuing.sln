@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineQueuing", "OnlineQueu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineQueuingUnitTests", "OnlineQueuingUnitTests\OnlineQueuingUnitTests.csproj", "{B16907BC-7055-4EB8-8414-2FCE20AAF003}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineQueuingIntegrationTests", "OnlineQueuingIntegrationTests\OnlineQueuingIntegrationTests.csproj", "{D82BA8B2-4D80-4695-AAE4-FAB171329A60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B16907BC-7055-4EB8-8414-2FCE20AAF003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B16907BC-7055-4EB8-8414-2FCE20AAF003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B16907BC-7055-4EB8-8414-2FCE20AAF003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D82BA8B2-4D80-4695-AAE4-FAB171329A60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D82BA8B2-4D80-4695-AAE4-FAB171329A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D82BA8B2-4D80-4695-AAE4-FAB171329A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D82BA8B2-4D80-4695-AAE4-FAB171329A60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
