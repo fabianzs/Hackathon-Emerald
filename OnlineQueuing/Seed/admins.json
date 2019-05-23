@@ -1,0 +1,19 @@
+﻿{
+  "admins": [
+    {
+      "name": "Fábián Zsófia Eszter",
+      "email": "fabian.zsofia.eszter@gmail.com",
+      "role": "Admin"
+    },
+    {
+      "name": "Molnár László",
+      "email": "laszlo.molnar25@gmail.com",
+      "role": "Admin"
+    },
+    {
+      "name": "Farkas Janos",
+      "email": "janos.f96@gmail.com",
+      "role": "Admin"
+    }
+  ]
+}

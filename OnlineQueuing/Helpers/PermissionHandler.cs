@@ -50,7 +50,7 @@ namespace OnlineQueuing.Helpers
         private bool IsAdmin(ClaimsPrincipal user, object resource)
         {
             string email = authService.GetUserEmail(user);
-            User dbUser = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
+            Entities.User dbUser = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
             if (dbUser != null)
             {
                 if(dbUser.Role.Equals("Admin"))

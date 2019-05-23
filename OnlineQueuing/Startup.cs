@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OnlineQueuing.Data;
 using OnlineQueuing.Helpers;
+using OnlineQueuing.Seed;
 using OnlineQueuing.Services;
 
 namespace OnlineQueuing
@@ -44,12 +45,17 @@ namespace OnlineQueuing
         {
             services.AddMvc();
 
-            services.AddDbContext<ApplicationContext>(builder =>
-                       builder.UseInMemoryDatabase("InMemoryDatabase"));
-
-            //services.AddDbContext<ApplicationContext>(builder =>
-            //           builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-            //            .EnableSensitiveDataLogging(true));
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<ApplicationContext>(builder =>
+                        builder.UseInMemoryDatabase("InMemoryDatabase"));
+            }
+            if (env.IsProduction())
+            {
+                services.AddDbContext<ApplicationContext>(builder =>
+                       builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                        .EnableSensitiveDataLogging(true));
+            }
 
             services.AddAuthorization(auth =>
             {
@@ -113,11 +119,18 @@ namespace OnlineQueuing
             services.AddScoped<HttpClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext applicationContext)
         {
+            AdminParser adminParser = new AdminParser(applicationContext, configuration);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                adminParser.FillUpDbWithAdmins();
+            }
+
+            if (env.IsProduction())
+            {
+                adminParser.FillUpDbWithAdmins();
             }
 
             app.UseAuthentication();
