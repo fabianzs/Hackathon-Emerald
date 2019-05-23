@@ -1,7 +1,9 @@
-﻿using OnlineQueuing.Data;
+﻿using Microsoft.AspNetCore.Http;
+using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -39,6 +41,14 @@ namespace OnlineQueuing.Services
                 applicationContext.SaveChanges();
             }
             return user;
+        }
+
+        public string GetEmailFromJwtToken(HttpRequest request)
+        {
+            string tokenString = request.Headers["Authorization"];
+            string token = tokenString.Split(" ")[1];
+            JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
+            return jwtToken.Claims.First(claim => claim.Type == "Email").Value;
         }
     }
 }
