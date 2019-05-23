@@ -59,7 +59,7 @@ namespace OnlineQueuing.Services
 
         public async Task CreateSlackReminder(string email, string notificationBody, string time)
         {
-            Int32 unixTimestamp = (Int32)(new DateTime(2019, 5, 23).Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            Int32 unixTimestamp = (Int32)(new DateTime(2019, 5, 24).Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
             var responseObject = await EmailLookup(email);
 

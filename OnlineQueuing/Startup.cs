@@ -37,10 +37,10 @@ namespace OnlineQueuing
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
+
             //services.AddDbContext<ApplicationContext>(builder =>
             //           builder.UseInMemoryDatabase("InMemoryDatabase"));
-          
+
             services.AddDbContext<ApplicationContext>(builder =>
                        builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                         .EnableSensitiveDataLogging(true));
@@ -62,6 +62,8 @@ namespace OnlineQueuing
                     });
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISlackService, SlackService>();
+            services.AddScoped<HttpClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
