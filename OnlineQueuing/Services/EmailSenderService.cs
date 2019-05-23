@@ -23,7 +23,7 @@ namespace OnlineQueuing.Services
             MailAddress fromAddress = new MailAddress(configuration["GmailUser"], "");
             MailAddress toAddress = new MailAddress(toEmail, toName);
             string fromPassword = configuration["GmailPassword"];
-            string subject = "Subject";
+            string subject = "Confirm reservation";
             string body = $"Dear {toName}!\n We recieved your reservation!\n We are waiting for you!\n Staff";
 
             smtpClient.Host = "smtp.gmail.com";
@@ -31,7 +31,7 @@ namespace OnlineQueuing.Services
             smtpClient.EnableSsl = true;
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(fromAddress.Address, fromPassword);            using (var message = new MailMessage(fromAddress, toAddress)
+            smtpClient.Credentials = new NetworkCredential(fromAddress.Address, fromPassword); using (var message = new MailMessage(fromAddress, toAddress)
             {
                 Subject = subject,
                 Body = body
