@@ -26,7 +26,6 @@ namespace OnlineQueuing.Controllers
 
             await slackService.SendSlackMessage("laszlo.molnar25@gmail.com", "You have 1 new appointment!" );
             await slackService.CreateSlackReminder("laszlo.molnar25@gmail.com", "Reminder set!", "a");
-            //await emailService.SendMessageAsync("megalotisemelard@gmail.com");
             emailService2.SendEmail("balogh.botond8@gmail.com", "Boti");
             return Created("", new { messageSentTo = "message" });
         }
