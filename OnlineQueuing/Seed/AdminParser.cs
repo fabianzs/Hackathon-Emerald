@@ -20,7 +20,7 @@ namespace OnlineQueuing.Seed
         public AdminParser(ApplicationContext applicationContext, IConfiguration configuration)
         {
             this.Configuration = configuration;
-            AdminsFromJson = new StreamReader(".\\Seed\\admins.json").ReadToEnd();
+            AdminsFromJson = new StreamReader(configuration["AdminListLocation"]).ReadToEnd();
             this.ApplicationContext = applicationContext;
             AdminParserDTO = JsonConvert.DeserializeObject<AdminParserDTO>(AdminsFromJson);
         }
