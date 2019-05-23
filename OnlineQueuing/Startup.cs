@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OnlineQueuing.Data;
 using OnlineQueuing.Helpers;
+using OnlineQueuing.Mocks;
 using OnlineQueuing.Seed;
 using OnlineQueuing.Services;
 
@@ -119,10 +120,33 @@ namespace OnlineQueuing
             services.AddScoped<HttpClient>();
         }
 
+        public void ConfigureTestingServices(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationContext>(builder =>
+                builder.UseInMemoryDatabase("InMemoryDatabase"));
+
+            services.AddCors();
+            services.AddMvc().AddJsonOptions(options =>
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Admin", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme??)
+                    .RequireAuthenticatedUser().Build());
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Admin";
+                options.DefaultChallengeScheme = "Admin";
+            }).AddTestAuth(o => { });
+        }
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext applicationContext)
         {
             AdminParser adminParser = new AdminParser(applicationContext, configuration);
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.EnvironmentName == "Testing")
             {
                 app.UseDeveloperExceptionPage();
                 adminParser.FillUpDbWithAdmins();

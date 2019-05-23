@@ -4,7 +4,8 @@ using System.Text;
 
 namespace OnlineQueuingIntegrationTests.Fixtures
 {
-    class Collection
+    [CollectionDefinition("BaseCollection")]
+    public class Collection : ICollectionFixture<TestContext>
     {
     }
 }
