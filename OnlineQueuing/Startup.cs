@@ -78,11 +78,13 @@ namespace OnlineQueuing
             {
                 app.UseDeveloperExceptionPage();
                 AdminParser adminParser = new AdminParser(applicationContext, configuration);
+                adminParser.FillUpDbWithAdmins();
             }
 
             if (env.IsProduction())
             {
                 AdminParser adminParser = new AdminParser(applicationContext, configuration);
+                adminParser.FillUpDbWithAdmins();
             }
 
             app.UseAuthentication();

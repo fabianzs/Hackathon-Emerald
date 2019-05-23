@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using OnlineQueuing.Data;
 using OnlineQueuing.DTO;
+using OnlineQueuing.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,14 @@ namespace OnlineQueuing.Seed
 
         public void FillUpDbWithAdmins()
         {
-            
+            var admins = AdminParserDTO.Admins;
+
+            foreach (var user in admins)
+            {
+                User adminToAdd = new User() { Email = user.Email, Role = user.Role, Name = user.Name };
+                ApplicationContext.Add(adminToAdd);
+                ApplicationContext.SaveChanges();
+            }
         }
     }
 }
