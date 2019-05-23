@@ -10,10 +10,14 @@ namespace OnlineQueuing.Controllers
     public class UserController : Controller
     {
         private ISlackService slackService;
+        private EmailSenderService emailService;
+        private EmailSenderService emailService2;
 
-        public UserController(ISlackService ss)
+        public UserController(ISlackService ss, EmailSenderService es, EmailSenderService es2)
         {
             this.slackService = ss;
+            this.emailService = es;
+            this.emailService2 = es2;
         }
 
         [HttpPost("appointment")]
@@ -22,6 +26,8 @@ namespace OnlineQueuing.Controllers
 
             await slackService.SendSlackMessage("laszlo.molnar25@gmail.com", "You have 1 new appointment!" );
             await slackService.CreateSlackReminder("laszlo.molnar25@gmail.com", "Reminder set!", "a");
+            //await emailService.SendMessageAsync("megalotisemelard@gmail.com");
+            emailService2.SendEmail("balogh.botond8@gmail.com", "Boti");
             return Created("", new { messageSentTo = "message" });
         }
     }

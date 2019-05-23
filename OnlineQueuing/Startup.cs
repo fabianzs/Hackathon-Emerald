@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Google.Apis.Gmail.v1;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,20 +52,30 @@ namespace OnlineQueuing
                 .AddDefaultTokenProviders(); ;
 
             services.AddAuthentication(options =>
-                    {
-                        options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                    })
-                    .AddGoogle(options =>
-                    {
-                        options.ClientId = configuration["Authentication:Google:ClientId"];
-                        options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-                        options.SaveTokens = true;
-                    });
+            {
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+                   .AddGoogle(options =>
+                   {
+                       options.ClientId = configuration["Authentication:Google:ClientId"];
+                       options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                       options.AuthorizationEndpoint += "?prompt=consent";
+                       options.AccessType = "offline";
+                       options.SaveTokens = true;
+                       options.Scope.Add("https://mail.google.com/");
+                       options.Scope.Add("https://www.googleapis.com/auth/gmail.modify");
+                       options.Scope.Add("https://www.googleapis.com/auth/gmail.compose");
+                       options.Scope.Add("https://www.googleapis.com/auth/gmail.send");
+                   });
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ISlackService, SlackService>();
             services.AddScoped<HttpClient>();
+            services.AddScoped<GmailService>();
+            services.AddScoped<EmailSenderService>();
+            services.AddScoped<EmailSenderService>();
+            services.AddScoped<SmtpClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
