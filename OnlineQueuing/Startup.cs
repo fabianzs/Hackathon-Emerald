@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineQueuing.Data;
+using OnlineQueuing.Seed;
 using OnlineQueuing.Services;
 
 namespace OnlineQueuing
@@ -38,12 +39,17 @@ namespace OnlineQueuing
         {
             services.AddMvc();
 
-            //services.AddDbContext<ApplicationContext>(builder =>
-            //           builder.UseInMemoryDatabase("InMemoryDatabase"));
-
-            services.AddDbContext<ApplicationContext>(builder =>
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<ApplicationContext>(builder =>
+                        builder.UseInMemoryDatabase("InMemoryDatabase"));
+            }
+            if (env.IsProduction())
+            {
+                services.AddDbContext<ApplicationContext>(builder =>
                        builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                         .EnableSensitiveDataLogging(true));
+            }
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
@@ -66,11 +72,20 @@ namespace OnlineQueuing
             services.AddScoped<HttpClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext applicationContext)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                AdminParser adminParser = new AdminParser(applicationContext, configuration);
+               // seedDataFromObject.FillDatabaseFromObject();
+            }
+
+            if (env.IsProduction())
+            {
+                AdminParser adminParser = new AdminParser(applicationContext, configuration);
+
+               // seedDataFromObject.FillDatabaseFromObject();
             }
 
             app.UseAuthentication();
