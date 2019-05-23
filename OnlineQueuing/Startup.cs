@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Apis.Gmail.v1;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -117,6 +119,10 @@ namespace OnlineQueuing
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ISlackService, SlackService>();
             services.AddScoped<HttpClient>();
+            services.AddScoped<GmailService>();
+            services.AddScoped<EmailSenderService>();
+            services.AddScoped<EmailSenderService>();
+            services.AddScoped<SmtpClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext applicationContext)
