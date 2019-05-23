@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnlineQueuing.Data;
+using OnlineQueuing.Services;
 
 namespace OnlineQueuing
 {
@@ -31,12 +32,35 @@ namespace OnlineQueuing
                 .AddEnvironmentVariables();
             this.configuration = builder.Build();
         }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            
+            //services.AddDbContext<ApplicationContext>(builder =>
+            //           builder.UseInMemoryDatabase("InMemoryDatabase"));
+          
             services.AddDbContext<ApplicationContext>(builder =>
-                        builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                       builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                         .EnableSensitiveDataLogging(true));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationContext>()
+                .AddDefaultTokenProviders(); ;
+
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                    })
+                    .AddGoogle(options =>
+                    {
+                        options.ClientId = configuration["Authentication:Google:ClientId"];
+                        options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                        options.SaveTokens = true;
+                    });
+
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -47,7 +71,9 @@ namespace OnlineQueuing
             }
 
             app.UseAuthentication();
+
             app.UseMvc();
+
         }
     }
 }
