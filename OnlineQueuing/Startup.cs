@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -36,10 +37,10 @@ namespace OnlineQueuing
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
+
             //services.AddDbContext<ApplicationContext>(builder =>
             //           builder.UseInMemoryDatabase("InMemoryDatabase"));
-          
+
             services.AddDbContext<ApplicationContext>(builder =>
                        builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                         .EnableSensitiveDataLogging(true));
@@ -61,6 +62,8 @@ namespace OnlineQueuing
                     });
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISlackService, SlackService>();
+            services.AddScoped<HttpClient>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
