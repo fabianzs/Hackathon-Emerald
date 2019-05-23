@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +15,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using OnlineQueuing.Data;
+using OnlineQueuing.Helpers;
 using OnlineQueuing.Services;
 
 namespace OnlineQueuing
@@ -38,12 +44,18 @@ namespace OnlineQueuing
         {
             services.AddMvc();
 
-            //services.AddDbContext<ApplicationContext>(builder =>
-            //           builder.UseInMemoryDatabase("InMemoryDatabase"));
-
             services.AddDbContext<ApplicationContext>(builder =>
-                       builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-                        .EnableSensitiveDataLogging(true));
+                       builder.UseInMemoryDatabase("InMemoryDatabase"));
+
+            //services.AddDbContext<ApplicationContext>(builder =>
+            //           builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+            //            .EnableSensitiveDataLogging(true));
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Admin", policy =>
+                    policy.Requirements.Add(new AdminRequirement()));
+            });
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
@@ -54,13 +66,48 @@ namespace OnlineQueuing
                         options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
                         options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
                     })
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateIssuerSigningKey = true,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Authentication:Jwt:Secret"])),
+                            ClockSkew = TimeSpan.Zero
+                        };
+                        options.Events = new JwtBearerEvents()
+                        {
+                            OnAuthenticationFailed = c =>
+                            {
+                                c.NoResult();
+                                c.Response.StatusCode = 401;
+                                c.Response.ContentType = "application/json";
+                                c.Response.WriteAsync(JsonConvert.SerializeObject(new CustomErrorMessage("Unauthorized"))).Wait();
+                                return Task.CompletedTask;
+                            },
+                            OnChallenge = c =>
+                            {
+                                c.HandleResponse();
+                                return Task.CompletedTask;
+                            }
+                        };
+                    })
                     .AddGoogle(options =>
                     {
                         options.ClientId = configuration["Authentication:Google:ClientId"];
                         options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                        options.AuthorizationEndpoint += "?prompt=consent";
+                        options.AccessType = "offline";
                         options.SaveTokens = true;
+                        options.Scope.Add("https://mail.google.com/");
+                        options.Scope.Add("https://www.googleapis.com/auth/gmail.modify");
+                        options.Scope.Add("https://www.googleapis.com/auth/gmail.compose");
+                        options.Scope.Add("https://www.googleapis.com/auth/gmail.send");
                     });
 
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ISlackService, SlackService>();
             services.AddScoped<HttpClient>();
