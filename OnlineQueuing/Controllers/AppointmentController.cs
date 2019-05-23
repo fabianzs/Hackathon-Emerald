@@ -13,31 +13,28 @@ namespace OnlineQueuing.Controllers
 {
     public class AppointmentController : Controller
     {
-        private readonly ApplicationContext applicationContext;
+        private readonly IAppointmentService appointmentService;
         private readonly IAuthService authService;
 
-        public AppointmentController(ApplicationContext application, IAuthService authService)
+        public AppointmentController(IAppointmentService appointmentService, IAuthService authService)
         {
             this.authService = authService;
-            this.applicationContext = application;
+            this.appointmentService = appointmentService;
         }
- 
+
         [HttpPost("appointment")]
         public IActionResult PostNewAppointment(Appointment appointment)
         {
-            List<User> appUsers = applicationContext.Users.Select(u => u).ToList();
+            bool result = appointmentService.CreateAppointment(appointment);
 
-            List<int> allTimeSlots = appUsers.SelectMany(u => u.Apointments.Select(a => a.TimeSlot)).ToList();
-            List<DateTime> allDatetime = appUsers.SelectMany(d => d.Apointments.Select(t => t.Date.DateTime)).ToList();
-
-            if (!allTimeSlots.Contains(appointment.TimeSlot) && appointment.TimeSlot > 1 && appointment.TimeSlot < 8 && !allDatetime.Contains(appointment.Date.DateTime))
+            if (result)
             {
-                applicationContext.Add(appointment);
-                applicationContext.SaveChanges();
-
                 return Created("", new { message = "Success" });
             }
-            return BadRequest( new { message = "Your request is not valid" });
+            else
+            {
+                return BadRequest(new { message = "Your request is not valid" });
+            }
         }
 
         [HttpDelete("deleteAppointment")]

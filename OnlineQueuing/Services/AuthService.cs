@@ -48,7 +48,7 @@ namespace OnlineQueuing.Services
             string tokenString = request.Headers["Authorization"];
             string token = tokenString.Split(" ")[1];
             JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
-            return jwtToken.Claims.First(claim => claim.Type == "Email").Value;
+            return jwtToken.Claims.First(claim => claim.Type == "email").Value;
         }
     }
 }

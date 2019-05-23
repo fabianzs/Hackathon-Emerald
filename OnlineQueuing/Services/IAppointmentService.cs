@@ -8,6 +8,6 @@ namespace OnlineQueuing.Services
 {
     public interface IAppointmentService
     {
-         void CreateAppointment(Appointment appiontment);
+         bool CreateAppointment(Appointment appiontment);
     }
 }

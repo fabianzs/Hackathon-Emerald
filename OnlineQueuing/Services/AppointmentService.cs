@@ -16,7 +16,7 @@ namespace OnlineQueuing.Services
             this.applicationContext = applicationContext;
         }
 
-        public void CreateAppointment(Appointment appiontment)
+        public bool CreateAppointment(Appointment appiontment)
         {
             List<User> appUsers = applicationContext.Users.Select(u => u).ToList();
             List<int> allTimeSlots = appUsers.SelectMany(u => u.Apointments.Select(a => a.TimeSlot)).ToList();
@@ -26,7 +26,9 @@ namespace OnlineQueuing.Services
             {
                 applicationContext.Add(appiontment);
                 applicationContext.SaveChanges();
+                return true;
             }
+            else return false;
         }
     }
 }
