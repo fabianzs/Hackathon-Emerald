@@ -57,9 +57,9 @@ namespace OnlineQueuing.Services
             await httpClient.SendAsync(postMessageRequest);
         }
 
-        public async Task CreateSlackReminder(string email, string notificationBody, string time)
+        public async Task CreateSlackReminder(string email, string notificationBody, int timeSlot, string day)
         {
-            Int32 unixTimestamp = (Int32)(new DateTime(2019, 5, 24).Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            int timeStamp = CreateDateTimeForReminder(day, timeSlot);
 
             var responseObject = await EmailLookup(email);
 
@@ -69,12 +69,32 @@ namespace OnlineQueuing.Services
 
             var reminderRequestBody = new List<KeyValuePair<string, string>>();
             reminderRequestBody.Add(new KeyValuePair<string, string>("text", notificationBody));
-            reminderRequestBody.Add(new KeyValuePair<string, string>("time", unixTimestamp.ToString()));
+            reminderRequestBody.Add(new KeyValuePair<string, string>("time", timeStamp.ToString()));
             reminderRequestBody.Add(new KeyValuePair<string, string>("user", responseObject.user.id));
 
             reminderRequest.Content = new FormUrlEncodedContent(reminderRequestBody);
 
             await httpClient.SendAsync(reminderRequest);
+        }
+
+        public int CreateDateTimeForReminder(string date, int timeSlot)
+        {
+            string hour = string.Empty;
+            switch (timeSlot)
+            {
+                case 1:
+                    hour = date + " 10:00:00,000";
+                    break;
+                case 2:
+                    hour = date + " 11:00:00,000";
+                    break;
+            }
+            DateTime dateTime = DateTime.ParseExact(hour, "yyyy-MM-dd HH:mm:ss,fff",
+                                       System.Globalization.CultureInfo.InvariantCulture);
+            DateTime earlierDateTime = dateTime.Add(new TimeSpan(-2, -30, 0));
+            Int32 output = (Int32)(earlierDateTime.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+            return output;
         }
     }
 }
