@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using OnlineQueuing.DTO;
 
 namespace OnlineQueuing.Services
 {
@@ -20,18 +21,26 @@ namespace OnlineQueuing.Services
             this.authService = authService;
         }
 
-        public bool CreateAppointment(Appointment appiontment, HttpRequest request)
+        public bool CreateAppointment(HttpRequest request, AppointmentDTO appointmentDTO)
         {
             List<User> appUsers = applicationContext.Users.Select(u => u).ToList();
             List<int> allTimeSlots = appUsers.SelectMany(u => u.Apointments.Select(a => a.TimeSlot)).ToList();
             List<DateTime> allDatetime = appUsers.SelectMany(d => d.Apointments.Select(t => t.Date.DateTime)).ToList();
+            Appointment appointment = new Appointment()
+            {
+                TimeSlot = appointmentDTO.TimeSlot,
+                ServiceType = appointmentDTO.ServiceType,
+                Date = new Date { DateTime = appointmentDTO.Date }
+  
+            };
+            //List<User> admins = appUsers.Where(u => u.Role.Equals("Admin")).ToList();
 
-            if (!allTimeSlots.Contains(appiontment.TimeSlot) && appiontment.TimeSlot > 1 && appiontment.TimeSlot < 8 && !allDatetime.Contains(appiontment.Date.DateTime))
+            if (!allTimeSlots.Contains(appointment.TimeSlot) && appointment.TimeSlot > 1 && appointment.TimeSlot < 8 && !allDatetime.Contains(appointment.Date.DateTime))
             {
                 string email = authService.GetEmailFromJwtToken(request);
                 User user = applicationContext.Users.FirstOrDefault(u => u.Email == email);
-                user.Apointments.Add(appiontment);
-                applicationContext.Add(appiontment);
+                user.Apointments.Add(appointment);
+                applicationContext.Add(appointment);
                 applicationContext.SaveChanges();
                 return true;
             }

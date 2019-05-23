@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OnlineQueuing.DTO;
 using OnlineQueuing.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace OnlineQueuing.Services
 {
     public interface IAppointmentService
     {
-         bool CreateAppointment(Appointment appiontment, HttpRequest request);
+         bool CreateAppointment(HttpRequest request, AppointmentDTO appointmentDTO);
          bool DeleteAppointment(Appointment appiontment, HttpRequest request);
     }
 }

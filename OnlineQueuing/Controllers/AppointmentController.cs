@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineQueuing.Data;
+using OnlineQueuing.DTO;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
 
@@ -24,9 +25,10 @@ namespace OnlineQueuing.Controllers
         }
 
         [HttpPost("appointment")]
-        public IActionResult PostNewAppointment(Appointment appointment)
+        public IActionResult PostNewAppointment([FromBody]AppointmentDTO appointmentDTO)
         {
-            bool result = appointmentService.CreateAppointment(appointment, Request);
+     
+            bool result = appointmentService.CreateAppointment(Request, appointmentDTO);
 
             if (result)
             {
