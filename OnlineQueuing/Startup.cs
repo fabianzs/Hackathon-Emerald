@@ -74,16 +74,15 @@ namespace OnlineQueuing
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext applicationContext)
         {
+            AdminParser adminParser = new AdminParser(applicationContext, configuration);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                AdminParser adminParser = new AdminParser(applicationContext, configuration);
                 adminParser.FillUpDbWithAdmins();
             }
 
             if (env.IsProduction())
             {
-                AdminParser adminParser = new AdminParser(applicationContext, configuration);
                 adminParser.FillUpDbWithAdmins();
             }
 
