@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
