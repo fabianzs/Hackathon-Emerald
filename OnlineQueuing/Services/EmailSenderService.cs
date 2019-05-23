@@ -24,7 +24,7 @@ namespace OnlineQueuing.Services
             MailAddress toAddress = new MailAddress(toEmail, toName);
             string fromPassword = configuration["GmailPassword"];
             string subject = "Confirm reservation";
-            string body = $"Dear {toName}!\n We recieved your reservation!\n We are waiting for you!\n Staff";
+            string body = $"Dear {toName}! \nWe recieved your reservation! \nWe are waiting for you! \nStaff";
 
             smtpClient.Host = "smtp.gmail.com";
             smtpClient.Port = 587;
