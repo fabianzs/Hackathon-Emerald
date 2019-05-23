@@ -88,6 +88,24 @@ namespace OnlineQueuing.Services
                 case 2:
                     hour = date + " 11:00:00,000";
                     break;
+                case 3:
+                    hour = date + " 12:00:00,000";
+                    break;
+                case 4:
+                    hour = date + " 13:00:00,000";
+                    break;
+                case 5:
+                    hour = date + " 14:00:00,000";
+                    break;
+                case 6:
+                    hour = date + " 15:00:00,000";
+                    break;
+                case 7:
+                    hour = date + " 16:00:00,000";
+                    break;
+                case 8:
+                    hour = date + " 17:00:00,000";
+                    break;
             }
             DateTime dateTime = DateTime.ParseExact(hour, "yyyy-MM-dd HH:mm:ss,fff",
                                        System.Globalization.CultureInfo.InvariantCulture);
