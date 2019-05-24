@@ -1,56 +1,54 @@
 ﻿using Moq;
-using OnlineQueuing.Data;
+using OnlineQueuing.Controllers;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using Xunit;
 
 namespace OnlineQueuingUnitTests
 {
     public class AuthServiceTests
     {
-        //private Mock<ApplicationContext> _authService;
+        private Mock<IAuthService> authService;
+        private AuthController authController;
+        private ClaimsPrincipal claims;
+        private User testUser;
 
-        //public AuthServiceTests()
-        //{
-        //    _authService = new Mock<ApplicationContext> ();
-        //}
-
-        //private AuthService Subject()
-        //{
-        //    return new AuthService(_authService.Object);
-        //}
-
-        private string _authService()
+        public AuthServiceTests()
         {
-            var claims = new List<Claim>
+            string email = "zombilyanos@gmail.com";
+            string name = "zombilyani";
+            testUser = new User()
             {
-new Claim(ClaimTypes.Email, "balogh.botond8@gmail.com", ClaimValueTypes.String, "https://gov.uk")
+                Name = name,
+                Email = email,
+                Role = "User",
             };
-            ClaimsPrincipal user2 = new ClaimsPrincipal(new ClaimsIdentity(claims));
-            Mock<AuthService> mockObject = new Mock<AuthService>();
-            
-            return mockObject.Setup(m => m.GetUserEmail(user2)).ToString();
+            claims = new ClaimsPrincipal(new List<ClaimsIdentity>() { new ClaimsIdentity(new List<Claim>() { new Claim(ClaimTypes.Name, "zombilyan"), new Claim(ClaimTypes.Email, "zombilyanos@gmail@gmail.com"), new Claim(ClaimTypes.Role, "User") }) });
+            this.authService = new Mock<IAuthService>();
+            authService.Setup(x => x.GetUserEmail(claims)).Returns(email);
+            authService.Setup(x => x.GetUsername(claims)).Returns(name);
+            authService.Setup(x => x.GetUserFromDb(email)).Returns(testUser);
+            authController = new AuthController(authService.Object);
         }
 
         [Fact]
-        public void auth()
+        public void GetUserEmail_ReturnsEmail()
         {
-            var claims = new List<Claim>
-            {
-new Claim(ClaimTypes.Email, "balogh.botond8@gmail.com", ClaimValueTypes.String, "https://gov.uk")
-            };
-            ClaimsPrincipal user = new ClaimsPrincipal(new ClaimsIdentity(claims));
-            //var service = new AuthService(applicationContext);
-            //string userEmail = service.GetUserEmail(user2);
-            //Assert.Equal(user.Email, userEmail);
-            //Assert.Equal(user.Email, user2.Claims.First(claim => claim.Type == ClaimTypes.Email).Value);
-            string valami = this._authService();
-            Assert.Equal("balogh.botond8@gmail.com", valami);
+            Assert.Equal("zombilyanos@gmail.com", authService.Object.GetUserEmail(claims));
+        }
+
+        [Fact]
+        public void GetUserName_ReturnsUsername()
+        {
+            Assert.Equal("zombilyani", authService.Object.GetUsername(claims));
+        }
+
+        [Fact]
+        public void GetUserFromDb_ReturnsUser()
+        {
+            Assert.Equal(testUser, authService.Object.GetUserFromDb("zombilyanos@gmail.com"));
         }
     }
 }
