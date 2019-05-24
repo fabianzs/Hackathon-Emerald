@@ -1,19 +1,27 @@
-﻿using OnlineQueuing.Data;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OnlineQueuing.Services
 {
     public class AuthService : IAuthService
     {
+        private readonly IConfiguration configuration;
         private readonly ApplicationContext applicationContext;
 
-        public AuthService(ApplicationContext applicationContext)
+        public AuthService(IConfiguration configuration, ApplicationContext applicationContext)
         {
+            this.configuration = configuration;
             this.applicationContext = applicationContext;
         }
 
@@ -34,11 +42,50 @@ namespace OnlineQueuing.Services
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
             if (user == null)
             {
-                user = new User() { Email = email, Name = username, Role = Role.User };
+                user = new User()
+                {
+                    Email = email,
+                    Name = username,
+                    Role = Role.Admin
+                };
                 applicationContext.Users.Add(user);
                 applicationContext.SaveChanges();
             }
+
             return user;
+        }
+
+        public User GetUserFromDb(string email)
+        {
+            User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
+            return user;
+        }
+
+        public string CreateJwtToken(string name, string email, string role)
+        {
+
+            JwtSecurityToken token = new JwtSecurityToken(
+                claims: new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, name),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, role)
+                },
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Authentication:Jwt:Secret"])), SecurityAlgorithms.HmacSha256Signature)
+                );
+            string securetoken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return securetoken;
+        }
+
+        public string GetEmailFromJwtToken(HttpRequest request)
+        {
+            string tokenString = request.Headers["Authorization"];
+            string token = tokenString.Split(" ")[1];
+            JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
+            return jwtToken.Claims.First(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
         }
     }
 }

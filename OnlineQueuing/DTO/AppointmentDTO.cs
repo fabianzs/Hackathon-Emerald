@@ -1,16 +1,17 @@
-﻿using System;
+﻿using OnlineQueuing.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OnlineQueuing.Entities
+namespace OnlineQueuing.DTO
 {
-    public class Appointment
+    public class AppointmentDTO
     {
-        public long AppointmentId { get; set; }
-        public User User { get; set; }
         public int TimeSlot { get; set; }
         public string ServiceType { get; set; }
         public string Date { get; set; }
     }
+
+
 }
