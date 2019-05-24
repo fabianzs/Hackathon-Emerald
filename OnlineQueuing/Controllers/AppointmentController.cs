@@ -25,7 +25,7 @@ namespace OnlineQueuing.Controllers
             this.userService = userService;
         }
 
-        [HttpPost("createappointment")]
+        [HttpPost("appointment")]
         public async Task<IActionResult> PostNewAppointment([FromBody]AppointmentDTO appointmentDTO)
         {
      
