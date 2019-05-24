@@ -119,10 +119,10 @@ namespace OnlineQueuing
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<ISlackService, SlackService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<HttpClient>();
             services.AddScoped<GmailService>();
-            services.AddScoped<EmailSenderService>();
-            services.AddScoped<EmailSenderService>();
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
             services.AddScoped<SmtpClient>();
         }
 

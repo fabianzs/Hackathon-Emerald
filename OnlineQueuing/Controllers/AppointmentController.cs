@@ -16,22 +16,24 @@ namespace OnlineQueuing.Controllers
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService appointmentService;
+        private readonly IUserService userService;
         
 
-        public AppointmentController(IAppointmentService appointmentService)
+        public AppointmentController(IAppointmentService appointmentService, IUserService userService)
         {
-            
             this.appointmentService = appointmentService;
+            this.userService = userService;
         }
 
         [HttpPost("createappointment")]
-        public IActionResult PostNewAppointment([FromBody]AppointmentDTO appointmentDTO)
+        public async Task<IActionResult> PostNewAppointment([FromBody]AppointmentDTO appointmentDTO)
         {
      
-            bool result = appointmentService.CreateAppointment(Request, appointmentDTO);
+            Appointment newAppointment = appointmentService.CreateAppointment(Request, appointmentDTO);
 
-            if (result)
+            if (newAppointment != null)
             {
+                await userService.SendMessageToAdmin(newAppointment);
                 return Created("", new { message = "Success" });
             }
             else

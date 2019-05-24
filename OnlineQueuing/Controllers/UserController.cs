@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineQueuing.DTO;
+using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
 using System;
 using System.Collections.Generic;
@@ -10,23 +12,31 @@ namespace OnlineQueuing.Controllers
     public class UserController : Controller
     {
         private ISlackService slackService;
-        private EmailSenderService emailService;
-        private EmailSenderService emailService2;
+        private IEmailSenderService emailService;
+        private IAppointmentService appointmentService;
 
-        public UserController(ISlackService ss, EmailSenderService es, EmailSenderService es2)
+        public UserController(ISlackService ss,  IEmailSenderService es, IAppointmentService appointmentService)
         {
             this.slackService = ss;
             this.emailService = es;
-            this.emailService2 = es2;
+            this.appointmentService = appointmentService;
+
         }
 
-        [HttpPost("appointment")]
-        public async Task<IActionResult> CreateAppointment()
-        {
-            await slackService.SendSlackMessage("laszlo.molnar25@gmail.com", "You have 1 new appointment!");
-            await slackService.CreateSlackReminder("laszlo.molnar25@gmail.com", "Reminder set!", 1, "2019-06-10");
-            emailService2.SendEmail("laszlo.molnar25@gmail.com", "Laci");
-            return Created("", new { messageSentTo = "message" });
-        }
+        //[HttpPost("appointment")]
+        //public async Task<IActionResult> CreateAppointment([FromBody]AppointmentDTO appointmentDTO)
+        //{
+        //    foreach (var admin in appointmentService.GivesAllAdmin())
+        //    {
+        //        await slackService.SendSlackMessage(admin.Email, $"You have 1 new appointment with the following details: \n Timeslot: {appointmentDTO.TimeSlot}, \n ServiceType: {appointmentDTO.ServiceType}, \n Date: {appointmentDTO.Date}");
+        //    }
+        //    foreach (var admin in appointmentService.GivesAllAdmin())
+        //    {
+        //    await slackService.CreateSlackReminder(admin.Email, $"You have 1 new appointment with the following details: \n Timeslot: {appointmentDTO.TimeSlot}, \n ServiceType: {appointmentDTO.ServiceType}, \n Date: {appointmentDTO.Date}", appointmentDTO.TimeSlot, appointmentDTO.Date);
+        //    }
+
+        //    emailService.SendEmail(appointmentService.Email, appointmentService.FindAppointmentUser(appointmentDTO).Name);
+        //    return Created("", new { messageSentTo = "message" });
+        //}
     }
 }
