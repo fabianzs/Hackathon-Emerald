@@ -26,14 +26,7 @@ namespace OnlineQueuing.Controllers
         {
             string email = authService.GetUserEmail(User);
             string username = authService.GetUsername(User);
-            User user = authService.SaveUser(email, username);
-            return Ok(user);
-        }
-
-        [Authorize]
-        [HttpGet("jwttoken")]
-        public IActionResult CreateToken()
-        {
+            authService.SaveUser(email, username);
             User user = authService.GetUserFromDb(authService.GetUserEmail(User));
             return Ok(authService.CreateJwtToken(user.Name, user.Email, user.Role));
         }
