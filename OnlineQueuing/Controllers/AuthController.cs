@@ -59,7 +59,7 @@ namespace OnlineQueuing.Controllers
         [HttpGet("admin")]
         public IActionResult Admin()
         {
-            return Ok("Mekkora admin vagy :O");
+            return Ok("You are an admin.");
         }
     }
 }

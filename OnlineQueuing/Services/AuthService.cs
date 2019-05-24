@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-﻿using Microsoft.AspNetCore.Identity;
 using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineQueuing.Services
 {
@@ -27,18 +24,38 @@ namespace OnlineQueuing.Services
 
         public string GetUserEmail(ClaimsPrincipal user)
         {
+            if(user == null)
+            {
+                throw new Exception();
+            }
             string userEmail = user.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+            if (userEmail == null)
+            {
+                throw new Exception();
+            }
             return userEmail;
         }
 
         public string GetUsername(ClaimsPrincipal user)
         {
+            if (user == null)
+            {
+                throw new Exception();
+            }
             string username = user.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+            if (username == null)
+            {
+                throw new Exception();
+            }
             return username;
         }
 
         public User SaveUser(string email, string username)
         {
+            if (email == null || username == null)
+            {
+                throw new Exception();
+            }
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
             if (user == null)
             {

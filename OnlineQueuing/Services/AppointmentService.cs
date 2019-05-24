@@ -53,13 +53,6 @@ namespace OnlineQueuing.Services
             List<User> admins = appUsers.Where(u => u.Role.Equals("Admin")).ToList();
             return admins;
         }
-
-        //public User FindAppointmentUser (AppointmentDTO appointmentDTO)
-        //{
-        //    User user = applicationContext.Users.FirstOrDefault(u => u.Name == appointmentDTO.User.Name && u.Email == appointmentDTO.User.Email);
-        //    return user;
-        //}
-
 /*
         public bool DeleteAppointment(AppointmentDTO appointmentDTO, HttpRequest request)
         {

@@ -12,8 +12,6 @@ namespace OnlineQueuing.Services
     {
          Appointment CreateAppointment(HttpRequest request, AppointmentDTO appointmentDTO);
          List<User> GivesAllAdmin();
-         //User FindAppointmentUser(AppointmentDTO appointmentDTO);
-
         // bool DeleteAppointment(HttpRequest request, AppointmentDTO appointmentDTO);
     }
 }
