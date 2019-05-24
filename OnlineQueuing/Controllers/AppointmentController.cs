@@ -33,7 +33,7 @@ namespace OnlineQueuing.Controllers
 
             if (newAppointment != null)
             {
-                await userService.SendMessageToAdmin(newAppointment);
+                await userService.SendMessages(newAppointment);
                 return Created("", new { message = "Success" });
             }
             else

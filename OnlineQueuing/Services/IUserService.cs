@@ -8,6 +8,6 @@ namespace OnlineQueuing.Services
 {
     public interface IUserService
     {
-        Task SendMessageToAdmin(Appointment appointment);
+        Task SendMessages(Appointment appointment);
     }
 }
