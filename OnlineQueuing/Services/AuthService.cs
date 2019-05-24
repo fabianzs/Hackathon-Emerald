@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using static OnlineQueuing.Helpers.CustomException;
 
 namespace OnlineQueuing.Services
 {
@@ -40,12 +41,12 @@ namespace OnlineQueuing.Services
         {
             if (user == null)
             {
-                throw new Exception();
+                throw new MissingClaimsException();
             }
             string username = user.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
             if (username == null)
             {
-                throw new Exception();
+                throw new MissingUsernameException();
             }
             return username;
         }
@@ -54,7 +55,7 @@ namespace OnlineQueuing.Services
         {
             if (email == null || username == null)
             {
-                throw new Exception();
+                throw new MissingInformationException();
             }
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
             if (user == null)
@@ -75,12 +76,15 @@ namespace OnlineQueuing.Services
         public User GetUserFromDb(string email)
         {
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
+            if(user == null)
+            {
+                throw new UserNotExistException();
+            }
             return user;
         }
 
         public string CreateJwtToken(string name, string email, string role)
         {
-
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: new Claim[]
                 {
@@ -94,6 +98,11 @@ namespace OnlineQueuing.Services
                 );
             string securetoken = new JwtSecurityTokenHandler().WriteToken(token);
 
+            if(securetoken == null)
+            {
+                throw new TokenGenerationException();
+            }
+
             return securetoken;
         }
 
@@ -102,7 +111,14 @@ namespace OnlineQueuing.Services
             string tokenString = request.Headers["Authorization"];
             string token = tokenString.Split(" ")[1];
             JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
-            return jwtToken.Claims.First(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
+            string email = jwtToken.Claims.First(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
+
+            if(email == null)
+            {
+                throw new MissingUserEmailException();
+            }
+
+            return email;
         }
     }
 }
