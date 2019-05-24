@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OnlineQueuing.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineQueuing.DTO;
 using OnlineQueuing.Entities;
 using OnlineQueuing.Services;
+using System.Threading.Tasks;
 
 
 namespace OnlineQueuing.Controllers

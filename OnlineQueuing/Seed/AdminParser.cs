@@ -3,11 +3,7 @@ using Newtonsoft.Json;
 using OnlineQueuing.Data;
 using OnlineQueuing.DTO;
 using OnlineQueuing.Entities;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnlineQueuing.Seed
 {

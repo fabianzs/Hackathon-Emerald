@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Mail;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using Google.Apis.Gmail.v1;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +15,11 @@ using OnlineQueuing.Data;
 using OnlineQueuing.Helpers;
 using OnlineQueuing.Seed;
 using OnlineQueuing.Services;
+using System;
+using System.Net.Http;
+using System.Net.Mail;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OnlineQueuing
 {

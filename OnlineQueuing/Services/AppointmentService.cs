@@ -1,12 +1,9 @@
-﻿using OnlineQueuing.Data;
+﻿using Microsoft.AspNetCore.Http;
+using OnlineQueuing.Data;
+using OnlineQueuing.DTO;
 using OnlineQueuing.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using OnlineQueuing.DTO;
 
 namespace OnlineQueuing.Services
 {
@@ -53,22 +50,5 @@ namespace OnlineQueuing.Services
             List<User> admins = appUsers.Where(u => u.Role.Equals("Admin")).ToList();
             return admins;
         }
-/*
-        public bool DeleteAppointment(AppointmentDTO appointmentDTO, HttpRequest request)
-        {
-            string email = authService.GetEmailFromJwtToken(request);
-            User user = applicationContext.Users.FirstOrDefault(u=>u.Email==email);
-
-            List<Appointment> userAppointments = user.Appointments.Select(a => a).ToList();
-
-            if (userAppointments.Contains(appointmentDTO))
-            {
-                applicationContext.Remove(appointmentDTO);
-                applicationContext.SaveChanges();
-                return true;
-            }
-            else return false;
-        }
-*/
     }
 }
