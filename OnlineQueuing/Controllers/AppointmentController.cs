@@ -41,18 +41,17 @@ namespace OnlineQueuing.Controllers
                 return BadRequest(new { message = "Your request is not valid" });
             }
         }
-        /*
-                [HttpDelete("deleteAppointment")]
-                public IActionResult DeleteAppointment([FromBody]AppointmentDTO appointmentDTO)
-                {
-                    bool result = appointmentService.DeleteAppointment(Request,appointmentDTO);
 
-                    if (result)
-                    {
-                        return NoContent();
-                    }
-                    return BadRequest(new { message = "Your request is not valid" });           
-                }
-                */
+        [HttpDelete("deleteAppointment/{id}")]
+        public IActionResult DeleteAppointment(long id)
+        {                   
+        bool result = appointmentService.DeleteAppointment(id,Request);
+
+        if (result)
+        {
+            return NoContent();
+        }
+            return BadRequest(new { message = "Your request is not valid" });           
+        }                
     }
 }
