@@ -10,6 +10,7 @@ namespace OnlineQueuing.Services
     {
         Task<EmailLookupResponse>EmailLookup(string email);
         Task SendSlackMessage(string email, string messageToSend);
-        Task CreateSlackReminder(string email, string notificationBody, string time);
+        Task CreateSlackReminder(string email, string notificationBody, int timeSlot, string day);
+        int CreateDateTimeForReminder(string date, int timeSlot);
     }
 }

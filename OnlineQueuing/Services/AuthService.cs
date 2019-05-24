@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
 using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using System;
@@ -62,6 +63,7 @@ namespace OnlineQueuing.Services
 
         public string CreateJwtToken(string name, string email, string role)
         {
+
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: new Claim[]
                 {
@@ -76,6 +78,14 @@ namespace OnlineQueuing.Services
             string securetoken = new JwtSecurityTokenHandler().WriteToken(token);
 
             return securetoken;
+        }
+
+        public string GetEmailFromJwtToken(HttpRequest request)
+        {
+            string tokenString = request.Headers["Authorization"];
+            string token = tokenString.Split(" ")[1];
+            JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
+            return jwtToken.Claims.First(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
         }
     }
 }

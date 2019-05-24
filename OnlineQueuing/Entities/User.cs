@@ -11,6 +11,11 @@ namespace OnlineQueuing.Entities
         public string Name { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
-        public List<Appointment> Apointments { get; set; }
+        public List<Appointment> Appointments { get; set; }
+
+        public User()
+        {
+            Appointments = new List<Appointment>();
+        }
     }
 }
