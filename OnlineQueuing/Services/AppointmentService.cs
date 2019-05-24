@@ -34,7 +34,6 @@ namespace OnlineQueuing.Services
                 User = applicationContext.Users.FirstOrDefault(u => u.Email == email),
                 Date = appointmentDTO.Date
             };
-            List<User> admins = appUsers.Where(u => u.Role.Equals("Admin")).ToList();
 
             if (!allTimeSlots.Contains(appointment.TimeSlot) && appointment.TimeSlot > 1 && appointment.TimeSlot < 8 && !allDatetime.Contains(appointment.Date))
             {
@@ -53,22 +52,22 @@ namespace OnlineQueuing.Services
             List<User> admins = appUsers.Where(u => u.Role.Equals("Admin")).ToList();
             return admins;
         }
-/*
-        public bool DeleteAppointment(AppointmentDTO appointmentDTO, HttpRequest request)
+
+        public bool DeleteAppointment(long id, HttpRequest request)
         {
             string email = authService.GetEmailFromJwtToken(request);
             User user = applicationContext.Users.FirstOrDefault(u=>u.Email==email);
-
             List<Appointment> userAppointments = user.Appointments.Select(a => a).ToList();
+            List<long> userAppointmentIds = userAppointments.Select(u => u.AppointmentId).ToList();
 
-            if (userAppointments.Contains(appointmentDTO))
+            if (userAppointmentIds.Contains(id))
             {
-                applicationContext.Remove(appointmentDTO);
+                applicationContext.Remove(user.Appointments.FirstOrDefault(u=>u.AppointmentId==id));
                 applicationContext.SaveChanges();
                 return true;
             }
             else return false;
         }
-*/
+
     }
 }
