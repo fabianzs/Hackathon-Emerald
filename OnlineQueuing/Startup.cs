@@ -115,14 +115,14 @@ namespace OnlineQueuing
                         options.Scope.Add("https://www.googleapis.com/auth/gmail.send");
                     });
 
-            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthorizationHandler, PermissionHandler>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<ISlackService, SlackService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<HttpClient>();
-            services.AddScoped<GmailService>();
             services.AddScoped<IEmailSenderService, EmailSenderService>();
+            services.AddScoped<GmailService>();
+            services.AddScoped<HttpClient>();
             services.AddScoped<SmtpClient>();
         }
 
@@ -141,6 +141,8 @@ namespace OnlineQueuing
             }
 
             app.UseAuthentication();
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseMvc();
         }
