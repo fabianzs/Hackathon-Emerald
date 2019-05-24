@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-﻿using Microsoft.AspNetCore.Identity;
 using OnlineQueuing.Data;
 using OnlineQueuing.Entities;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+using static OnlineQueuing.Helpers.CustomException;
 
 namespace OnlineQueuing.Services
 {
@@ -27,18 +25,38 @@ namespace OnlineQueuing.Services
 
         public string GetUserEmail(ClaimsPrincipal user)
         {
+            if(user == null)
+            {
+                throw new Exception();
+            }
             string userEmail = user.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
+            if (userEmail == null)
+            {
+                throw new Exception();
+            }
             return userEmail;
         }
 
         public string GetUsername(ClaimsPrincipal user)
         {
+            if (user == null)
+            {
+                throw new MissingClaimsException();
+            }
             string username = user.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+            if (username == null)
+            {
+                throw new MissingUsernameException();
+            }
             return username;
         }
 
         public User SaveUser(string email, string username)
         {
+            if (email == null || username == null)
+            {
+                throw new MissingInformationException();
+            }
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
             if (user == null)
             {
@@ -58,12 +76,15 @@ namespace OnlineQueuing.Services
         public User GetUserFromDb(string email)
         {
             User user = applicationContext.Users.FirstOrDefault(u => u.Email.Equals(email));
+            if(user == null)
+            {
+                throw new UserNotExistException();
+            }
             return user;
         }
 
         public string CreateJwtToken(string name, string email, string role)
         {
-
             JwtSecurityToken token = new JwtSecurityToken(
                 claims: new Claim[]
                 {
@@ -77,6 +98,11 @@ namespace OnlineQueuing.Services
                 );
             string securetoken = new JwtSecurityTokenHandler().WriteToken(token);
 
+            if(securetoken == null)
+            {
+                throw new TokenGenerationException();
+            }
+
             return securetoken;
         }
 
@@ -85,7 +111,14 @@ namespace OnlineQueuing.Services
             string tokenString = request.Headers["Authorization"];
             string token = tokenString.Split(" ")[1];
             JwtSecurityToken jwtToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
-            return jwtToken.Claims.First(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
+            string email = jwtToken.Claims.First(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
+
+            if(email == null)
+            {
+                throw new MissingUserEmailException();
+            }
+
+            return email;
         }
     }
 }

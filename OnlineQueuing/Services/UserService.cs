@@ -20,7 +20,7 @@ namespace OnlineQueuing.Services
             this.emailService = emailSenderService;
         }
 
-        public async Task SendMessageToAdmin(Appointment appointment)
+        public async Task SendMessages(Appointment appointment)
         {
             foreach (var admin in appointmentService.GivesAllAdmin())
             {

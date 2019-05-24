@@ -53,13 +53,6 @@ namespace OnlineQueuing.Services
             return admins;
         }
 
-        //public User FindAppointmentUser (AppointmentDTO appointmentDTO)
-        //{
-        //    User user = applicationContext.Users.FirstOrDefault(u => u.Name == appointmentDTO.User.Name && u.Email == appointmentDTO.User.Email);
-        //    return user;
-        //}
-
-
         public bool DeleteAppointment(long id, HttpRequest request)
         {
             string email = authService.GetEmailFromJwtToken(request);

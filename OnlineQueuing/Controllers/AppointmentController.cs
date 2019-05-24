@@ -25,7 +25,7 @@ namespace OnlineQueuing.Controllers
             this.userService = userService;
         }
 
-        [HttpPost("createappointment")]
+        [HttpPost("appointment")]
         public async Task<IActionResult> PostNewAppointment([FromBody]AppointmentDTO appointmentDTO)
         {
      
@@ -33,7 +33,7 @@ namespace OnlineQueuing.Controllers
 
             if (newAppointment != null)
             {
-                await userService.SendMessageToAdmin(newAppointment);
+                await userService.SendMessages(newAppointment);
                 return Created("", new { message = "Success" });
             }
             else
