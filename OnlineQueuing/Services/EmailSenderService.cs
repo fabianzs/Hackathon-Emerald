@@ -31,7 +31,8 @@ namespace OnlineQueuing.Services
             smtpClient.EnableSsl = true;
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(fromAddress.Address, fromPassword); using (var message = new MailMessage(fromAddress, toAddress)
+            smtpClient.Credentials = new NetworkCredential(fromAddress.Address, fromPassword);
+            using (var message = new MailMessage(fromAddress, toAddress)
             {
                 Subject = subject,
                 Body = body

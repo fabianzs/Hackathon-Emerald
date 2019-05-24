@@ -1,3 +1,4 @@
+﻿using Microsoft.AspNetCore.Http;
 ﻿using Microsoft.AspNetCore.Identity;
 using OnlineQueuing.Entities;
 using System;
@@ -15,5 +16,6 @@ namespace OnlineQueuing.Services
         User SaveUser(string email, string username);
         User GetUserFromDb(string email);
         string CreateJwtToken(string name, string email, string role);
+        string GetEmailFromJwtToken(HttpRequest request);
     }
 }
